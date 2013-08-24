@@ -145,7 +145,7 @@ public class Grabber
     	System.out.println("OPTIONS");
     	System.out.println("       file     the property file to use (path may be necessary)");
     	System.out.println("");
-    	System.out.println("-----------------------------------------------------");
+    	System.out.println("------------------------------------------------------");
     }
  	
 }
