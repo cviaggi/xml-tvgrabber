@@ -38,13 +38,13 @@ public class GuideScrapper {
 		guide = new TVGuide();
 	}
 
-	private URI buildUri(String year, String month, String day, String hour) throws URISyntaxException {
+	private URI buildUri(String year, String month, String day, String hour, String regionid, String zipcode) throws URISyntaxException {
 		
 		//TODO::Move all these to constants
  		URIBuilder builder = new URIBuilder();
  		builder.setScheme(Constants.URL_SCHEME).setHost(Constants.URL_HOST).setPath(Constants.URL_PATH)
  		    .setParameter("fmt", Format.NORMAL.getValue()) 	//format of the output
- 		    .setParameter("srvid", Constants.QUERY_PARAM_REGION_IDENTIFIER)  //set programming region to return
+ 		    .setParameter("srvid", regionid)  //set programming region to return
  		    .setParameter("gridmins", Constants.TWO_HOUR_TIME_BLOCK_IN_MINUTES) //2 hours in minutes
  		    .setParameter("gridyr", year)				//grid year
 		    .setParameter("gridmo", month)				//grid month
@@ -55,7 +55,7 @@ public class GuideScrapper {
  		    .setParameter("favchan", Constants.QUERY_PARAM_FAVORITE_CHANNELS_ONLY)
  		    .setParameter("magic", Constants.QUERY_PARAM_MAGIC_SETTING)
 		    .setParameter("magictype", Constants.QUERY_PARAM_MAGIC_TYPE_SETTING)
- 		    .setParameter("zip", Constants.QUERY_PARAM_ZIP_OUTPUT)
+ 		    .setParameter("zip", zipcode)
  		    .setParameter("music", Music.DISPLAY.getValue()) //display music channels 
  		    .setParameter("ppv", PayPerView.DO_NOT_DISPLAY.getValue()) //display ppv channels
  		    .setParameter("24hr", TwentFourHourProgramming.DISPLAY.getValue()) //display 24 hour programming channels 
@@ -65,7 +65,7 @@ public class GuideScrapper {
 
 	}
 
-	public void scrapeHoursAhead(int totalHoursAhead, File outputFile) throws ClientProtocolException, URISyntaxException, IOException, java.text.ParseException, SAXException {
+	public void scrapeHoursAhead(int totalHoursAhead, File outputFile, String regionid, String zipcode) throws ClientProtocolException, URISyntaxException, IOException, java.text.ParseException, SAXException {
 
 		int totalIncrements = totalHoursAhead / TIME_INCREMENT.TWO_HOURS.getValue();
 
@@ -80,7 +80,7 @@ public class GuideScrapper {
 		for(i = 0 ; i < totalIncrements; i++) {
 			
 			System.out.print(".");
-			scrape(dh.getYear(), dh.getMonth(), dh.getDay(), dh.getHour());
+			scrape(dh.getYear(), dh.getMonth(), dh.getDay(), dh.getHour(), regionid, zipcode);
 			dh.incrementDate(TIME_INCREMENT.TWO_HOURS);
 		}
 		log.info("Raw Data Done `" + i + "` Passes Made");
@@ -139,9 +139,9 @@ public class GuideScrapper {
 		
 	}
 	
-	public void scrape(String year, String month, String day, String hour) throws URISyntaxException, ClientProtocolException, IOException {
+	public void scrape(String year, String month, String day, String hour, String regionid, String zipcode) throws URISyntaxException, ClientProtocolException, IOException {
  			
- 		URI uri = buildUri(year, month, day, hour);
+ 		URI uri = buildUri(year, month, day, hour, regionid, zipcode);
  		
  		if(log.isDebugEnabled()) {
  			log.debug("URL: " + uri.toString());
